@@ -26,4 +26,10 @@ bot = Console()
 async def startup():
     Terminal.display("Console bot has established connection with discord api.")
 
+@bot.listen("on_message")
+async def console(message):
+    if message.channel.id == int(Constants.get("CONSOLE")):
+        message.content = f"c!jsk sh {message.content}"
+        await bot.proccess_command(message)
+
 bot.start(Constants.get("TOKEN"))
