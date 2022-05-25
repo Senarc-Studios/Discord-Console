@@ -1,4 +1,6 @@
-from discord import Intents
+import asyncio
+
+from discord import Intents, User
 
 from cool_utils import Terminal
 
@@ -14,11 +16,19 @@ class Console(Bot):
             application_id = Constants.get("APPLICATION_ID")
         )
 
-    async def start(*args, **kwargs):
+    async def is_owner(self, user: User):
+        if Constants.get("OWNER_ONLY_ACCESS"):
+            return user.id == Constants.get("OWNER_ID")
+        return True
+
+    async def start(self, *args, **kwargs):
         await super().start(*args, **kwargs)
 
-    async def close(*args, **kwargs):
+    async def close(self, *args, **kwargs):
         await super().close(*args, **kwargs)
+
+    async def setup_hook(self):
+        await self.load_extension("jishaku")
 
 bot = Console()
 
@@ -30,6 +40,6 @@ async def startup():
 async def console(message):
     if message.channel.id == int(Constants.get("CONSOLE")):
         message.content = f"c!jsk sh {message.content}"
-        await bot.proccess_command(message)
+        await bot.process_commands(message)
 
-bot.start(Constants.get("TOKEN"))
+asyncio.run(bot.start(Constants.get("TOKEN")))

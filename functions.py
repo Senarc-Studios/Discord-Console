@@ -2,11 +2,9 @@ import json
 
 from typing import Any
 
+file_ = open('config.json')
+constants = json.load(file_)
 class Constants:
-    def __init__(self):
-        file_ = open('config.json')
-        self.constants = json.load(file_)
-
-    @classmethod
-    def get(self, constant: str) -> Any:
-        return self.constants[constant]
+    @staticmethod
+    def get(constant: str) -> Any:
+        return constants[constant]
